@@ -125,6 +125,10 @@ from shared_configs.configs import POSTGRES_DEFAULT_SCHEMA
 from shared_configs.configs import SENTRY_DSN
 from shared_configs.contextvars import CURRENT_TENANT_ID_CONTEXTVAR
 
+            #####################################
+from onyx.server.indexing.api import router as indexing_router
+        ############################################################################################################
+
 logger = setup_logger()
 
 file_handlers = [
@@ -372,6 +376,8 @@ def get_application(lifespan_override: Lifespan | None = None) -> FastAPI:
     include_router_with_global_prefix_prepended(application, api_key_router)
     include_router_with_global_prefix_prepended(application, standard_oauth_router)
     include_router_with_global_prefix_prepended(application, federated_router)
+    
+    include_router_with_global_prefix_prepended(application, indexing_router)            ###################################################
 
     if AUTH_TYPE == AuthType.DISABLED:
         # Server logs this during auth setup verification step
