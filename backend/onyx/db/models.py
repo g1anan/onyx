@@ -83,6 +83,11 @@ from onyx.utils.headers import HeaderItemDict
 from shared_configs.enums import EmbeddingProvider
 from shared_configs.enums import RerankerProvider
 
+        ##############################3   new imports ####################################
+from sqlalchemy import Column
+from onyx.db.base import Base
+from datetime import datetime
+    ############################################################################################################################
 logger = setup_logger()
 
 
@@ -1724,6 +1729,21 @@ class IndexAttempt(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
+
+    #########################################################################################################################
+
+    # New fields for progress tracking
+    file_type: Mapped[str | None] = mapped_column(String, nullable=True)  # e.g., 'pdf', 'pptx', 'xlsx', 'docx'
+    total_pages: Mapped[int | None] = mapped_column(Integer, nullable=True)  # For PDFs
+    processed_pages: Mapped[int] = mapped_column(Integer, default=0)  # For PDFs
+    total_slides: Mapped[int | None] = mapped_column(Integer, nullable=True)  # For PPTX
+    processed_slides: Mapped[int] = mapped_column(Integer, default=0)  # For PPTX
+    total_sheets: Mapped[int | None] = mapped_column(Integer, nullable=True)  # For XLSX
+    processed_sheets: Mapped[int] = mapped_column(Integer, default=0)  # For XLSX
+    total_sections: Mapped[int | None] = mapped_column(Integer, nullable=True)  # For DOCX
+    processed_sections: Mapped[int] = mapped_column(Integer, default=0)  # For DOCX
+    is_complete: Mapped[bool] = mapped_column(Boolean, default=False)  # Completion flag
+    ##############################################################################################################################################################################
 
     connector_credential_pair: Mapped[ConnectorCredentialPair] = relationship(
         "ConnectorCredentialPair", back_populates="index_attempts"
